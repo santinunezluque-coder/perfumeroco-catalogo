@@ -942,8 +942,7 @@ function renderBrandCarousel(){
       : b.name;
     return `<a class="brand-logo-item${b.logo ? '' : ' text-logo'}" href="#" draggable="false" onclick="if(carouselDragFlags.brandCarousel) return false; selectBrand('${b.slug}'); return false;">${inner}</a>`;
   });
-  // duplicamos para loop continuo
-  el.innerHTML = items.concat(items).join('');
+  fillCarouselLoop(el, items);
   initCarouselDrag('brandCarousel');
 }
 
@@ -957,9 +956,28 @@ function renderCategoryCarousel(){
       <span class="category-tile-label">${c}</span>
     </a>`;
   });
-  // duplicamos para loop continuo
-  el.innerHTML = tiles.concat(tiles).join('');
+  fillCarouselLoop(el, tiles);
   initCarouselDrag('categoryCarousel');
+}
+
+// Duplica los items las veces que haga falta para que el truco del loop infinito
+// (scrollear un "set" completo y resetear) siempre tenga margen de sobra, incluso
+// en pantallas anchas donde un solo set de items es más angosto que el viewport
+// (si no, el navegador limita el scroll antes de llegar al punto de reset y el
+// carrusel se queda clavado para siempre).
+function fillCarouselLoop(el, itemHtmls){
+  el.innerHTML = itemHtmls.join('');
+  const setWidth = el.scrollWidth || 1;
+  let html = itemHtmls.join('');
+  let totalWidth = setWidth;
+  let copies = 1;
+  while (totalWidth - el.clientWidth < setWidth * 1.5 && copies < 12){
+    html += itemHtmls.join('');
+    totalWidth += setWidth;
+    copies++;
+  }
+  el.innerHTML = html;
+  el.dataset.loopWidth = setWidth;
 }
 
 const carouselDragFlags = {};
@@ -1006,8 +1024,8 @@ function initCarouselDrag(elId){
   function tick(){
     if (!paused && !isDown){
       el.scrollLeft += 0.6;
-      const half = el.scrollWidth / 2;
-      if (el.scrollLeft >= half) el.scrollLeft -= half;
+      const loopWidth = parseFloat(el.dataset.loopWidth) || (el.scrollWidth / 2);
+      if (el.scrollLeft >= loopWidth) el.scrollLeft -= loopWidth;
     }
     requestAnimationFrame(tick);
   }
