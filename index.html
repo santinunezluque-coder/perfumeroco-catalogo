@@ -230,9 +230,8 @@
   /* ---------- Category tiles ---------- */
   .category-tile{
     display:flex; flex-direction:column; align-items:center; gap:9px;
-    width: 92px;
     flex-shrink:0;
-    padding: 10px 6px;
+    padding: 10px 10px;
     cursor:pointer;
     background:none;
     border:none;
@@ -266,9 +265,10 @@
   .category-tile-label{
     font-size:.72rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
     color: var(--gold-light); text-align:center; line-height:1.3;
+    white-space:nowrap;
   }
   @media (max-width: 560px){
-    .category-tile{ width: 80px; padding: 8px 4px; }
+    .category-tile{ padding: 8px 8px; }
     .category-tile-icon{ width:36px; height:36px; }
     .category-tile-icon svg{ width:19px; height:19px; }
     .category-tile-label{ font-size:.64rem; }
@@ -407,15 +407,15 @@
   }
 
   footer{
-    background: var(--black);
-    color: var(--text-muted);
+    background: var(--cream);
+    color: var(--black-soft);
     text-align:center;
     padding: 34px 24px;
     font-size: .8rem;
     letter-spacing: .03em;
     margin-top: 56px;
   }
-  footer .serif{ color: var(--gold-light); font-size: 1rem; }
+  footer .serif{ color: var(--black-soft); font-size: 1rem; }
 
   /* ---------- Scroll to top ---------- */
   #scrollTopBtn{
@@ -998,6 +998,10 @@ function initCarouselDrag(elId){
   el.addEventListener('mouseleave', () => paused = false);
   el.addEventListener('touchstart', () => paused = true, { passive:true });
   el.addEventListener('touchend', () => { setTimeout(() => paused = false, 1500); });
+  // red de seguridad: un click (p.ej. elegir una tarjeta) puede disparar un scroll
+  // de página que deja el mouse "arriba" del carrusel sin que llegue el mouseleave,
+  // dejando el auto-scroll pausado para siempre. Forzamos la reanudación igual.
+  el.addEventListener('click', () => { setTimeout(() => paused = false, 300); });
 
   function tick(){
     if (!paused && !isDown){
