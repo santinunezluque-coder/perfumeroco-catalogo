@@ -365,9 +365,12 @@
     width:100%;
     max-height: 88vh;
     overflow-y:auto;
-    display:flex;
     position:relative;
     box-shadow: 0 30px 70px rgba(0,0,0,.4);
+  }
+  .modal-body{
+    display:flex;
+    width:100%;
   }
   .modal-close{
     position:absolute; top:12px; right:12px;
@@ -408,12 +411,12 @@
   @media (max-width: 680px){
     .modal-overlay{ padding:0; align-items:flex-end; }
     .modal-content{
-      flex-direction:column;
       width:100%;
       max-width:100%;
       max-height:90vh;
       border-radius: 18px 18px 0 0;
     }
+    .modal-body{ flex-direction:column; }
     .modal-img{ flex:none; padding: 20px 20px 4px; }
     .modal-img img{ max-height:210px; }
     .modal-info{ padding: 14px 20px 26px; gap:8px; }
@@ -423,7 +426,8 @@
     .modal-price{ font-size:1.2rem; }
     .modal-close{
       top:10px; right:10px; width:30px; height:30px; font-size:1rem;
-      background: rgba(21,21,23,.6);
+      background: rgba(11,11,12,.85);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.25);
     }
   }
 
@@ -489,7 +493,7 @@
 <div class="modal-overlay" id="productModal">
   <div class="modal-content">
     <button class="modal-close" aria-label="Cerrar" onclick="closeProductModal()">&times;</button>
-    <div id="modalBody" style="display:flex; width:100%; flex:1;"></div>
+    <div id="modalBody" class="modal-body"></div>
   </div>
 </div>
 
