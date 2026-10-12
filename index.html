@@ -100,6 +100,7 @@
     padding: 34px 0 30px;
     border-bottom: 1px solid rgba(169,131,60,.18);
   }
+  .presentations-band .section-title{ margin: 0 0 28px; }
   .presentations-grid{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
@@ -544,6 +545,10 @@
 
 <section class="presentations-band">
   <div class="container">
+    <div class="section-title">
+      <h2>Nuestras presentaciones</h2>
+      <div class="underline"></div>
+    </div>
     <div class="presentations-grid">
       <div class="presentation-card">
         <div class="presentation-icon">
@@ -567,7 +572,7 @@
         <p>Producto 100% original de fábrica, con frasco, caja y sellos de la marca.</p>
       </div>
     </div>
-    <p class="presentations-note">No todas las fragancias están disponibles en las tres presentaciones: consultanos por cuál se encuentra en cada una. El badge <b>“Entrega inmediata”</b> en la ficha de cada producto indica que ese producto tiene stock para entrega inmediata, no la presentación.</p>
+    <p class="presentations-note">No todas las fragancias están disponibles en las tres presentaciones: consultanos por cuál se encuentra en cada una. La etiqueta <b>“Entrega inmediata”</b> en la ficha de cada producto indica que ese producto tiene stock para entrega inmediata, no la presentación.</p>
   </div>
 </section>
 
@@ -623,7 +628,8 @@ const CATEGORIES = [
   "Frutal",
   "Amaderado",
   "Especiado",
-  "Dulce / Gourmand"
+  "Dulce / Gourmand",
+  "Splash"
 ];
 
 /* =========================================================
@@ -819,7 +825,8 @@ const PRODUCTS = [
     notes: ["Notas marinas","Fresia","Aloe vera","Margarita","Manzanilla","Notas dulces","Flor de ciruelo"],
     description: "Bruma perfumada floral-acuática, fresca y ligera, con flores blancas sobre un fondo suave de aloe vera y manzanilla.",
     image: "https://fimgs.net/mdimg/perfume/375x500.33495.jpg",
-    presentations: ["original"]
+    presentations: ["original"],
+    categories: ["Fresco / Acuático", "Splash"]
   },
   {
     brand: "Victoria's Secret", name: "Pineapple & Shea Glow", price: 80000, gender: "Femenino",
@@ -827,7 +834,8 @@ const PRODUCTS = [
     notes: ["Piña","Manteca de karité"],
     description: "Bruma perfumada frutal-tropical: piña jugosa y realista sobre un fondo cremoso y cálido de manteca de karité.",
     image: "https://fimgs.net/mdimg/perfume/375x500.93218.jpg",
-    presentations: ["original"]
+    presentations: ["original"],
+    categories: ["Frutal", "Splash"]
   },
   {
     brand: "Victoria's Secret", name: "Coconut Passion", price: 80000, gender: "Femenino",
@@ -835,7 +843,8 @@ const PRODUCTS = [
     notes: ["Coco","Vainilla","Lirio de los valles","Manzanilla","Aloe vera"],
     description: "Bruma perfumada dulce y cremosa: coco tropical y vainilla cálida sobre un toque floral de lirio de los valles.",
     image: "https://fimgs.net/mdimg/perfume/375x500.114727.jpg",
-    presentations: ["original"]
+    presentations: ["original"],
+    categories: ["Dulce / Gourmand", "Splash"]
   }
 ];
 
@@ -954,6 +963,10 @@ function genderClass(g){
   return 'uni';
 }
 
+function productInCategory(p, cat){
+  return (p.categories || [p.category]).includes(cat);
+}
+
 function productCard(p){
   const img = p.image || PLACEHOLDER_IMG;
   const idx = PRODUCTS.indexOf(p);
@@ -986,7 +999,7 @@ function renderCategoriaView(filter){
   const cats = filter === '__all__' || !filter ? CATEGORIES : [filter];
   let html = '';
   cats.forEach(cat => {
-    const items = PRODUCTS.filter(p => p.category === cat);
+    const items = PRODUCTS.filter(p => productInCategory(p, cat));
     if (items.length === 0) return;
     html += `
       <div class="category-block">
@@ -1029,7 +1042,7 @@ function renderMarcaView(filterSlug){
       html += `<div class="empty-state"><p>Sin productos cargados aún para esta casa.</p></div>`;
     } else {
       CATEGORIES.forEach(cat => {
-        const items = brandProducts.filter(p => p.category === cat);
+        const items = brandProducts.filter(p => productInCategory(p, cat));
         if (items.length === 0) return;
         html += `
           <div class="brand-category-group">
