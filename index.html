@@ -108,18 +108,38 @@
   }
   .presentation-card{
     text-align:center;
-    padding: 18px 14px;
+    padding: 28px 20px 24px;
+    background:#fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(169,131,60,.12);
+    position:relative;
+    transition: transform .25s ease, box-shadow .25s ease;
   }
+  .presentation-card:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 16px 36px rgba(0,0,0,.18);
+  }
+  .presentation-card::before{
+    content: counter(preso, decimal-leading-zero);
+    position:absolute; top:14px; right:18px;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:.78rem;
+    color: rgba(169,131,60,.45);
+  }
+  .presentations-grid{ counter-reset: preso; }
+  .presentation-card{ counter-increment: preso; }
   .presentation-icon{
-    width:48px; height:48px;
-    margin: 0 auto 12px;
+    width:56px; height:56px;
+    margin: 0 auto 14px;
     border-radius:50%;
-    background: #fff;
-    border: 1px solid rgba(169,131,60,.3);
+    background: linear-gradient(135deg, var(--gold-light), var(--gold-dim));
+    box-shadow: 0 6px 16px rgba(169,131,60,.35);
     display:flex; align-items:center; justify-content:center;
-    color: var(--gold-dim);
+    color: #1a1407;
   }
-  .presentation-icon svg{ width:22px; height:22px; }
+  .presentation-icon svg{ width:25px; height:25px; }
   .presentation-card h3{
     font-family:'Playfair Display', serif;
     font-size: 1.5rem;
@@ -144,9 +164,10 @@
   }
   @media (max-width: 680px){
     .presentations-grid{ grid-template-columns: 1fr; gap:16px; }
-    .presentation-card{ padding: 6px 10px; display:flex; align-items:center; gap:14px; text-align:left; }
-    .presentation-icon{ margin:0; flex-shrink:0; }
+    .presentation-card{ padding: 16px 14px; display:flex; align-items:center; gap:14px; text-align:left; }
+    .presentation-icon{ margin:0; flex-shrink:0; width:48px; height:48px; }
     .presentation-card h3{ font-size: 1.25rem; white-space:normal; }
+    .presentation-card::before{ display:none; }
   }
 
   /* ---------- Brand carousel ---------- */
