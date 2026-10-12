@@ -196,6 +196,9 @@
     border-radius: 8px;
     padding: 10px 18px;
     box-sizing: content-box;
+    -webkit-user-drag: none;
+    user-drag: none;
+    pointer-events: none;
   }
   .brand-logo-item.text-logo{
     font-family:'Playfair Display', serif;
@@ -1123,7 +1126,7 @@ function renderBrandCarousel(){
   }
   const items = BRANDS.map(b => {
     const inner = b.logo
-      ? `<img src="${b.logo}" alt="${b.name}">`
+      ? `<img src="${b.logo}" alt="${b.name}" draggable="false">`
       : b.name;
     return `<a class="brand-logo-item${b.logo ? '' : ' text-logo'}" href="#" draggable="false" onclick="if(carouselDragFlags.brandCarousel) return false; selectBrand('${b.slug}'); return false;">${inner}</a>`;
   });
