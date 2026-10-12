@@ -214,24 +214,53 @@
     margin: 14px auto 0;
   }
 
-  /* ---------- Category nav chips ---------- */
-  .chip-row{
-    display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+  /* ---------- Category tiles ---------- */
+  .category-tiles{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:14px;
     margin: 28px 0 10px;
   }
-  .chip{
-    font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; font-weight:600;
-    padding: 9px 18px; border-radius:999px;
-    border: 1px solid rgba(169,131,60,.4);
-    background: #fff;
-    color: var(--gold-dim);
+  .category-tile{
+    display:flex; flex-direction:column; align-items:center; gap:9px;
+    width: 108px;
+    padding: 18px 10px 15px;
+    border-radius: 16px;
+    border: 1px solid rgba(169,131,60,.3);
+    background:#fff;
     cursor:pointer;
-    transition: all .2s ease;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
   }
-  .chip:hover, .chip.active{
-    background: var(--black-soft);
-    color: var(--gold-light);
+  .category-tile:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(169,131,60,.2);
+  }
+  .category-tile.active{
+    background: linear-gradient(160deg, var(--black-soft), var(--black));
     border-color: var(--black-soft);
+    box-shadow: 0 12px 24px rgba(0,0,0,.25);
+  }
+  .category-tile-icon{
+    width:44px; height:44px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:#faf6ec;
+    color: var(--gold-dim);
+    transition: background .2s ease, color .2s ease;
+  }
+  .category-tile-icon svg{ width:21px; height:21px; }
+  .category-tile.active .category-tile-icon{
+    background: linear-gradient(135deg, var(--gold-light), var(--gold-dim));
+    color: #1a1407;
+  }
+  .category-tile-label{
+    font-size:.72rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    color: var(--black-soft); text-align:center; line-height:1.3;
+  }
+  .category-tile.active .category-tile-label{ color: var(--gold-light); }
+  @media (max-width: 560px){
+    .category-tile{ width: 92px; padding: 14px 6px 12px; }
+    .category-tile-icon{ width:38px; height:38px; }
+    .category-tile-icon svg{ width:18px; height:18px; }
+    .category-tile-label{ font-size:.66rem; }
   }
 
   /* ---------- Product grid ---------- */
@@ -583,7 +612,7 @@
     <div class="underline"></div>
   </div>
 
-  <div class="chip-row" id="categoryChips"></div>
+  <div class="category-tiles" id="categoryChips"></div>
 
   <div id="categoriaView"></div>
   <div id="marcaView" style="display:none;"></div>
@@ -631,6 +660,19 @@ const CATEGORIES = [
   "Dulce / Gourmand",
   "Splash"
 ];
+
+/* Íconos de línea (stroke=currentColor) para cada categoría, usados en las tiles */
+const CATEGORY_ICONS = {
+  "__all__": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>',
+  "Cítrico": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8.2"/><path d="M12 3.8v16.4M3.8 12h16.4M6.3 6.3l11.4 11.4M17.7 6.3L6.3 17.7"/></svg>',
+  "Fresco / Acuático": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c4 5 7 8.5 7 12a7 7 0 0 1-14 0c0-3.5 3-7 7-12z"/></svg>',
+  "Floral": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="7" r="3"/><circle cx="17" cy="12" r="3"/><circle cx="12" cy="17" r="3"/><circle cx="7" cy="12" r="3"/><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none"/></svg>',
+  "Frutal": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8.5" cy="15.5" r="4"/><circle cx="16" cy="16.5" r="3.3"/><path d="M12 11.5c0-4 1-6.3 3.2-7.8"/></svg>',
+  "Amaderado": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8 7 6 10.3 6 13.3a6 6 0 0 0 12 0C18 10.3 16 7 12 3z"/><path d="M12 19.3V21"/></svg>',
+  "Especiado": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 6 7 9 7 12.5a5 5 0 0 0 10 0C17 9 15 6 12 2z"/><path d="M12 17a2.5 2.5 0 0 1-1.3-4.6c.3 1 .8 1.5 1.3 1.5s1-.5 1.3-1.5A2.5 2.5 0 0 1 12 17z"/></svg>',
+  "Dulce / Gourmand": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5c-2.5 4.5-9.5 9-9.5 9z"/></svg>',
+  "Splash": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c2.6 3.4 5 6 5 8.6a5 5 0 0 1-10 0C7 11 9.4 8.4 12 5z"/><circle cx="5.2" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="18.6" cy="6.3" r="1.2" fill="currentColor" stroke="none"/></svg>'
+};
 
 /* =========================================================
    MARCAS
@@ -937,16 +979,20 @@ function initBrandCarouselDrag(){
 
 function renderCategoryChips(){
   const el = document.getElementById('categoryChips');
-  const chips = ['Todas', ...CATEGORIES].map((c,i) => {
-    const active = i===0 ? ' active' : '';
-    return `<button class="chip${active}" data-cat="${i===0?'__all__':c}">${c}</button>`;
+  const tiles = ['Todas', ...CATEGORIES].map((c,i) => {
+    const slug = i===0 ? '__all__' : c;
+    const icon = CATEGORY_ICONS[slug] || '';
+    return `<button class="category-tile" data-cat="${slug}">
+      <span class="category-tile-icon">${icon}</span>
+      <span class="category-tile-label">${c}</span>
+    </button>`;
   });
-  el.innerHTML = chips.join('');
-  el.querySelectorAll('.chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      el.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-      chip.classList.add('active');
-      renderCategoriaView(chip.dataset.cat);
+  el.innerHTML = tiles.join('');
+  el.querySelectorAll('.category-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      el.querySelectorAll('.category-tile').forEach(t=>t.classList.remove('active'));
+      tile.classList.add('active');
+      renderCategoriaView(tile.dataset.cat);
     });
   });
 }
@@ -996,7 +1042,11 @@ function renderCategoriaView(filter){
     el.innerHTML = `<div class="empty-state"><p>Todavía no se cargaron productos. ¡Pronto va a estar lleno de fragancias!</p></div>`;
     return;
   }
-  const cats = filter === '__all__' || !filter ? CATEGORIES : [filter];
+  if (!filter){
+    el.innerHTML = `<div class="empty-state"><p>Elegí una categoría arriba para ver las fragancias.</p></div>`;
+    return;
+  }
+  const cats = filter === '__all__' ? CATEGORIES : [filter];
   let html = '';
   cats.forEach(cat => {
     const items = PRODUCTS.filter(p => productInCategory(p, cat));
@@ -1021,7 +1071,11 @@ function renderMarcaView(filterSlug){
     el.innerHTML = `<div class="empty-state"><p>Todavía no se agregaron casas.</p></div>`;
     return;
   }
-  const filtered = filterSlug && filterSlug !== '__all__';
+  if (!filterSlug){
+    el.innerHTML = `<div class="empty-state"><p>Elegí una casa en el carrusel de arriba para ver sus fragancias.</p></div>`;
+    return;
+  }
+  const filtered = filterSlug !== '__all__';
   const list = filtered ? BRANDS.filter(b => b.slug === filterSlug) : BRANDS;
   if (list.length === 0){
     el.innerHTML = `<div class="empty-state"><p>No se encontró esa casa.</p></div>`;
@@ -1079,11 +1133,7 @@ function switchView(view){
 
 document.getElementById('viewSwitch').addEventListener('click', (e) => {
   if (e.target.tagName === 'BUTTON'){
-    const view = e.target.dataset.view;
-    if (view === 'marca'){
-      renderMarcaView('__all__');
-    }
-    switchView(view);
+    switchView(e.target.dataset.view);
     document.getElementById('sectionTitle').scrollIntoView({ behavior:'smooth', block:'start' });
   }
 });
@@ -1148,8 +1198,8 @@ document.addEventListener('keydown', (e) => {
 
 renderBrandCarousel();
 renderCategoryChips();
-renderCategoriaView('__all__');
-renderMarcaView('__all__');
+renderCategoriaView();
+renderMarcaView();
 </script>
 
 </body>
