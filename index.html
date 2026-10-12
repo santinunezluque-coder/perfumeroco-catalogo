@@ -374,6 +374,7 @@
   </div>
 
   <div class="chip-row" id="categoryChips"></div>
+  <div class="chip-row" id="brandChips" style="display:none;"></div>
 
   <div id="categoriaView"></div>
   <div id="marcaView" style="display:none;"></div>
@@ -624,7 +625,7 @@ function renderBrandCarousel(){
     const inner = b.logo
       ? `<img src="${b.logo}" alt="${b.name}">`
       : b.name;
-    return `<a class="brand-logo-item${b.logo ? '' : ' text-logo'}" href="#" onclick="switchView('marca'); return false;">${inner}</a>`;
+    return `<a class="brand-logo-item${b.logo ? '' : ' text-logo'}" href="#" onclick="selectBrand('${b.slug}'); return false;">${inner}</a>`;
   });
   // duplicamos para loop continuo
   el.innerHTML = items.concat(items).join('');
@@ -644,6 +645,32 @@ function renderCategoryChips(){
       renderCategoriaView(chip.dataset.cat);
     });
   });
+}
+
+function renderBrandChips(){
+  const el = document.getElementById('brandChips');
+  const chips = ['Todas', ...BRANDS.map(b => b.name)].map((name,i) => {
+    const active = i===0 ? ' active' : '';
+    const slug = i===0 ? '__all__' : BRANDS[i-1].slug;
+    return `<button class="chip${active}" data-brand="${slug}">${name}</button>`;
+  });
+  el.innerHTML = chips.join('');
+  el.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      el.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      renderMarcaView(chip.dataset.brand);
+      document.getElementById('sectionTitle').scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+}
+
+function selectBrand(slug){
+  switchView('marca');
+  const el = document.getElementById('brandChips');
+  el.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.brand === slug));
+  renderMarcaView(slug);
+  document.getElementById('sectionTitle').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 function genderClass(g){
@@ -699,14 +726,21 @@ function renderCategoriaView(filter){
   el.innerHTML = html || `<div class="empty-state"><p>No hay productos en esta categoría todavía.</p></div>`;
 }
 
-function renderMarcaView(){
+function renderMarcaView(filterSlug){
   const el = document.getElementById('marcaView');
   if (BRANDS.length === 0){
     el.innerHTML = `<div class="empty-state"><p>Todavía no se agregaron marcas.</p></div>`;
     return;
   }
+  const list = (!filterSlug || filterSlug === '__all__')
+    ? BRANDS
+    : BRANDS.filter(b => b.slug === filterSlug);
+  if (list.length === 0){
+    el.innerHTML = `<div class="empty-state"><p>No se encontró esa marca.</p></div>`;
+    return;
+  }
   let html = '';
-  BRANDS.forEach(b => {
+  list.forEach(b => {
     const brandProducts = PRODUCTS.filter(p => p.brand === b.name);
     html += `
       <div class="brand-block" id="marca-${b.slug}">
@@ -737,26 +771,33 @@ function switchView(view){
   const marBtn = document.querySelector('[data-view="marca"]');
   const catView = document.getElementById('categoriaView');
   const marView = document.getElementById('marcaView');
-  const chips = document.getElementById('categoryChips');
+  const catChips = document.getElementById('categoryChips');
+  const brandChips = document.getElementById('brandChips');
   const titleText = document.getElementById('sectionTitleText');
 
   if (view === 'marca'){
     catBtn.classList.remove('active'); marBtn.classList.add('active');
     catView.style.display='none'; marView.style.display='block';
-    chips.style.display='none';
+    catChips.style.display='none'; brandChips.style.display='flex';
     titleText.textContent = 'Explorá por Marca';
   } else {
     marBtn.classList.remove('active'); catBtn.classList.add('active');
     marView.style.display='none'; catView.style.display='block';
-    chips.style.display='flex';
+    brandChips.style.display='none'; catChips.style.display='flex';
     titleText.textContent = 'Explorá por Categoría';
   }
-
-  document.getElementById('sectionTitle').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 document.getElementById('viewSwitch').addEventListener('click', (e) => {
-  if (e.target.tagName === 'BUTTON'){ switchView(e.target.dataset.view); }
+  if (e.target.tagName === 'BUTTON'){
+    const view = e.target.dataset.view;
+    if (view === 'marca'){
+      document.getElementById('brandChips').querySelectorAll('.chip').forEach((c,i) => c.classList.toggle('active', i===0));
+      renderMarcaView('__all__');
+    }
+    switchView(view);
+    document.getElementById('sectionTitle').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
 });
 
 const scrollTopBtn = document.getElementById('scrollTopBtn');
@@ -769,8 +810,9 @@ scrollTopBtn.addEventListener('click', () => {
 
 renderBrandCarousel();
 renderCategoryChips();
+renderBrandChips();
 renderCategoriaView('__all__');
-renderMarcaView();
+renderMarcaView('__all__');
 </script>
 
 </body>
