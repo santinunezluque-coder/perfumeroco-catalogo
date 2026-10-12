@@ -606,7 +606,7 @@
   </div>
 </section>
 
-<div class="container">
+<div class="container" id="browseSection">
   <div class="section-title">
     <h2>Explorá por Casa</h2>
     <div class="underline"></div>
@@ -1110,7 +1110,7 @@ window.addEventListener('scroll', () => {
   scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
 });
 scrollTopBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('browseSection').scrollIntoView({ behavior:'smooth', block:'start' });
 });
 
 function openProductModal(idx){
