@@ -1257,7 +1257,7 @@ function productCard(p){
     </div>`;
 }
 
-function selectCategory(filter){
+function selectCategory(filter, skipScroll){
   const el = document.getElementById('resultsView');
   if (PRODUCTS.length === 0){
     el.innerHTML = `<div class="empty-state"><p>Todavía no se cargaron productos. ¡Pronto va a estar lleno de fragancias!</p></div>`;
@@ -1280,7 +1280,7 @@ function selectCategory(filter){
     });
     el.innerHTML = html || `<div class="empty-state"><p>No hay productos en esta categoría todavía.</p></div>`;
   }
-  document.getElementById('resultsSection').scrollIntoView({ behavior:'smooth', block:'start' });
+  if (!skipScroll) document.getElementById('resultsSection').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 function selectBrand(slug){
@@ -1507,6 +1507,7 @@ function checkout(){
 updateCartBadge();
 renderBrandCarousel();
 renderCategoryCarousel();
+selectCategory('__all__', true);
 </script>
 
 </body>
